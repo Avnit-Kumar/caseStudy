@@ -24,10 +24,13 @@ public class JpaConfig {
 	public DataSource dataSource() {
 		DriverManagerDataSource ds = new DriverManagerDataSource();
 		ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		ds.setUrl("jdbc:mysql://localhost:3306/casedb");
-		ds.setUsername("user");
-		ds.setPassword("Passw0rd");
-		return ds;
+	    ds.setUrl(
+	        "jdbc:mysql://mysql-e54f158-trading-36e5.h.aivencloud.com:24648/defaultdb" +
+	        "?sslMode=REQUIRED"
+	    );
+	    ds.setUsername("avnadmin");
+	    ds.setPassword("AVNS_-iNe4nIa77Fpdg5aEcP");
+	    return ds;
 	}
 
 	@Bean
