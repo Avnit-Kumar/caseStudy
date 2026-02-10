@@ -1,4 +1,4 @@
-# 🐬 Running MySQL in Docker (Beginner Guide)
+# 🐬 Running MySQL in Docker
 
 This guide explains how to run **MySQL using Docker** on port **3306** and automatically create a database with predefined credentials.
 
