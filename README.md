@@ -14,7 +14,7 @@ This guide explains how to run **MySQL using Docker** on port **3306** and autom
 ## 📦 Pull the MySQL Docker Image
 
 ```bash
-docker pull mysql:8
+docker pull mysql:8.0
 ```
 
 ---
