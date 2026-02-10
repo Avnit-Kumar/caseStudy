@@ -7,8 +7,12 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -24,12 +28,9 @@ public class JpaConfig {
 	public DataSource dataSource() {
 		DriverManagerDataSource ds = new DriverManagerDataSource();
 		ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-	    ds.setUrl(
-	        "jdbc:mysql://mysql-e54f158-trading-36e5.h.aivencloud.com:24648/defaultdb" +
-	        "?sslMode=REQUIRED"
-	    );
-	    ds.setUsername("avnadmin");
-	    ds.setPassword("AVNS_-iNe4nIa77Fpdg5aEcP");
+		ds.setUrl("jdbc:mysql://localhost:3306/casedb");
+		ds.setUsername("user");
+		ds.setPassword("Passw0rd");
 	    return ds;
 	}
 
@@ -44,15 +45,29 @@ public class JpaConfig {
 		emf.setJpaVendorAdapter(vendorAdapter);
 
 		Properties props = new Properties();
-		props.put("hibernate.hbm2ddl.auto", "update");
+		props.put("hibernate.hbm2ddl.auto", "none");
 		props.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
 		props.put("hibernate.show_sql", "true");
+		props.put("spring.jpa.defer-datasource-initialization", "true");
 		emf.setJpaProperties(props);
 
 		return emf;
 	}
+	
+	@Bean
+	public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
+	    ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+	    populator.addScript(new ClassPathResource("schema.sql"));
+	    populator.addScript(new ClassPathResource("data.sql"));
+	    
+	    DataSourceInitializer initializer = new DataSourceInitializer();
+	    initializer.setDataSource(dataSource);
+	    initializer.setDatabasePopulator(populator);
+	    return initializer;
+	}
 
 	@Bean
+	@DependsOn("dataSourceInitializer")
 	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
 		return new JpaTransactionManager(emf);
 	}
