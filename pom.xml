@@ -9,6 +9,7 @@
 	<artifactId>caseStudy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+	
 
 	<name>caseStudy Maven Webapp</name>
 	<!-- FIXME change it to the project's website -->
@@ -18,70 +19,133 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
+		<org.springframework.version>5.2.22.RELEASE</org.springframework.version>
 	</properties>
 
-	<dependencies>
-		<!-- SPRING MVC -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>5.3.39</version>
-		</dependency>
-		<!-- SPRING DATA JPA -->
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-			<version>2.7.18</version>
-		</dependency>
-		<!-- HIBERNATE ORM -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.6.15.Final</version>
-		</dependency>
-		<!-- JPA API -->
-		<dependency>
-			<groupId>jakarta.persistence</groupId>
-			<artifactId>jakarta.persistence-api</artifactId>
-			<version>2.2.3</version>
-		</dependency>
-		<!-- MYSQL DRIVER -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.33</version>
-		</dependency>
-		<!-- SERVLET API -->
-		<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-			<version>4.0.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- JSP + JSTL -->
-		<dependency>
-			<groupId>jakarta.servlet.jsp.jstl</groupId>
-			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.web</groupId>
-			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<!-- VALIDATION -->
-		<dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>6.2.5.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.1</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	 <!-- Dependencias -->
+    <dependencies>
+        <!-- Spring Framework: Context > https://mvnrepository.com/artifact/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
+
+        <!-- Spring Framework: WebMVC > https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.2.22.RELEASE</version>
+        </dependency>
+
+<!--         Java Servlet API > https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+<!--        <dependency>-->
+<!--            <groupId>javax.servlet</groupId>-->
+<!--            <artifactId>javax.servlet-api</artifactId>-->
+<!--            <version>${javax.servlet-api-version}</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+<!--         JavaServer Pages API > https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api -->
+<!--        <dependency>-->
+<!--            <groupId>javax.servlet.jsp</groupId>-->
+<!--            <artifactId>javax.servlet.jsp-api</artifactId>-->
+<!--            <version>${javax.servlet.jsp-api-version}</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+<!--         Java Standard Tag Library > https://mvnrepository.com/artifact/javax.servlet/jstl -->
+<!--        <dependency>-->
+<!--            <groupId>javax.servlet</groupId>-->
+<!--            <artifactId>jstl</artifactId>-->
+<!--            <version>${javax.servlet.jstl-version}</version>-->
+<!--        </dependency>-->
+
+<!--         JUnit Jupiter API > https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter-api</artifactId>-->
+<!--            <version>${org.junit.jupiter-version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+<!-- Java Servlet API (provided by Tomcat) -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.1</version>
+    <scope>provided</scope>
+</dependency>
+
+<!-- JavaServer Pages API (provided by Tomcat) -->
+<dependency>
+    <groupId>javax.servlet.jsp</groupId>
+    <artifactId>javax.servlet.jsp-api</artifactId>
+    <version>2.3.3</version>
+    <scope>provided</scope>
+</dependency>
+
+<!-- Java Standard Tag Library (JSTL) -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
+    <version>1.2</version>
+</dependency>
+
+<!-- JUnit Jupiter API (JUnit 5) -->
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-api</artifactId>
+    <version>5.9.2</version>
+    <scope>test</scope>
+</dependency>
+<!-- Source: https://mvnrepository.com/artifact/javax.validation/validation-api -->
+<dependency>
+    <groupId>javax.validation</groupId>
+    <artifactId>validation-api</artifactId>
+    <version>2.0.1.Final</version>
+    <scope>compile</scope>
+</dependency>
+
+        <dependency>
+    <groupId>javax.persistence</groupId>
+    <artifactId>javax.persistence-api</artifactId>
+    <version>2.2</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-data-jpa</artifactId>
+    <version>2.2.13.RELEASE</version>
+</dependency>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.33</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-tx</artifactId>
+    <version>5.2.22.RELEASE</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-beans</artifactId>
+    <version>5.2.22.RELEASE</version>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-orm</artifactId>
+    <version>5.2.22.RELEASE</version>
+</dependency>
+
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>5.6.15.Final</version>   <!-- Most stable for Spring 5.x -->
+</dependency>
+
+    </dependencies>
 
 	<build>
 		<finalName>caseStudy</finalName>

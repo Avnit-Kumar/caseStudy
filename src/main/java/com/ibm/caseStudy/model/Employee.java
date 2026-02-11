@@ -1,90 +1,73 @@
 package com.ibm.caseStudy.model;
 
+import javax.persistence.*;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-
 @Entity
-@Table(name = "employees")
+@Table(name = "employees",
+       uniqueConstraints = @UniqueConstraint(
+           columnNames = {"first_name","middle_name","last_name","date_of_birth"}))
 public class Employee {
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Long uid;
 
-    @NotBlank(message = "First name is required")
-    @Column(name = "first_name", nullable = false, length = 50)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "middle_name", length = 50)
+    @Column(name = "middle_name")
     private String middleName;
 
-    @NotBlank(message = "Last name is required")
-    @Column(name = "last_name", nullable = false, length = 50)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @NotNull(message = "Date of birth is required")
-    @Past(message = "Birth date must be in the past")
     @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
 
-    @NotBlank(message = "Position is required")
-    @Column(name = "position", nullable = false, length = 100)
+    @Column(nullable = false)
     private String position;
-
-	public Long getId() {
-		return id;
+	public Long getUid() {
+		return uid;
 	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public void setUid(Long uid) {
+		this.uid = uid;
 	}
-
 	public String getFirstName() {
 		return firstName;
 	}
-
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
-
 	public String getMiddleName() {
 		return middleName;
 	}
-
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
 	}
-
 	public String getLastName() {
 		return lastName;
 	}
-
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-
-	public LocalDate getDateOfBirth() {
-		return dateOfBirth;
+	public LocalDate getBirthDate() {
+		return birthDate;
 	}
-
-	public void setDateOfBirth(LocalDate dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
 	}
-
 	public String getPosition() {
 		return position;
 	}
-
 	public void setPosition(String position) {
 		this.position = position;
 	}
+
+    
 }

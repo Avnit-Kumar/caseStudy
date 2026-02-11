@@ -1,21 +1,28 @@
-INSERT INTO employees (first_name, middle_name, last_name, position, date_of_birth) 
-VALUES ('John', 'Quincy', 'Adams', 'Manager', '1985-07-12');
+-- data.sql
 
-INSERT INTO employees (first_name, middle_name, last_name, position, date_of_birth) 
-VALUES ('Jane', NULL, 'Doe', 'Developer', '1992-03-25');
+-- 1) Seed employee only if not exists
+INSERT INTO employees (first_name, middle_name, last_name, position, date_of_birth)
+SELECT 'John', 'Quincy', 'Adams', 'Manager', '1985-07-12'
+WHERE NOT EXISTS (
+  SELECT 1 FROM employees
+  WHERE first_name='John'
+    AND middle_name='Quincy'
+    AND last_name='Adams'
+    AND date_of_birth='1985-07-12'
+);
 
-INSERT INTO employees (first_name, middle_name, last_name, position, date_of_birth) 
-VALUES ('Robert', 'Bruce', 'Wayne', 'CEO', '1970-02-19');
-
-
+-- 2) Seed a compensation row only if not already present for today
 INSERT INTO compensation (employee_id, comp_type, amount, description, payment_date)
-VALUES (1, 'Salary', 5000.00, NULL, CURRENT_DATE);
-
-INSERT INTO compensation (employee_id, comp_type, amount, description, payment_date)
-VALUES (1, 'Bonus', 1200.50, 'Annual Performance Bonus', CURRENT_DATE);
-
-INSERT INTO compensation (employee_id, comp_type, amount, description, payment_date)
-VALUES (2, 'Adjustment', 450.00, 'Project Launch Weekend', '2024-01-15');
-
-INSERT INTO compensation (employee_id, comp_type, amount, description, payment_date)
-VALUES (3, 'Commission', 2500.00, 'Q4 Sales Target Achieved', '2024-01-30');
+SELECT e.id, 'Salary', 5000.00, NULL, CURRENT_DATE
+FROM employees e
+WHERE e.first_name='John'
+  AND e.middle_name='Quincy'
+  AND e.last_name='Adams'
+  AND e.date_of_birth='1985-07-12'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM compensation c
+    WHERE c.employee_id = e.id
+      AND c.comp_type   = 'Salary'
+      AND c.payment_date = CURRENT_DATE
+  );
