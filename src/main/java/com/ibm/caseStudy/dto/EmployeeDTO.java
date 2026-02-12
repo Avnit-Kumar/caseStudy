@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class EmployeeDTO {
 	private Long id;
 	
@@ -25,6 +27,7 @@ public class EmployeeDTO {
 	@Size(max = 100, message = "Position cannot exceed 100 characters")
 	private String position;
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Past(message = "Birth date must be in the past")
 	@NotNull(message = "Date of birth is required")
 	private LocalDate dateOfBirth;
