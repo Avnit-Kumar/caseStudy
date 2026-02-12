@@ -3,7 +3,6 @@ package com.ibm.caseStudy.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
@@ -16,7 +15,6 @@ public class CompensationDTO {
 	private String type;
 	
 	@NotNull(message = "Amount is required")
-	@DecimalMin(value = "0.01", message = "Amount must be greater than 0")
 	private BigDecimal amount;
 	
 	private String description;
