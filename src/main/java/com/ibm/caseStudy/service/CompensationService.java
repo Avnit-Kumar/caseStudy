@@ -4,12 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Service;
-
 import com.ibm.caseStudy.dto.CompensationDTO;
 import com.ibm.caseStudy.model.Compensation;
 
-@Service
 public interface CompensationService {
 	Compensation addCompensation(CompensationDTO dto);
     Map<String, Double> getMonthlyTotalsForEmployee(Long employeeId, LocalDate start, LocalDate end);
