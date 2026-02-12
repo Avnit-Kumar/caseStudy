@@ -8,37 +8,34 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
 @Entity
-@Table(name = "employees")
+@Table(name = "employees", uniqueConstraints = { @UniqueConstraint(name = "uk_employee_identity", columnNames = {
+		"first_name", "middle_name", "last_name", "date_of_birth" }) })
 public class Employee {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @NotBlank(message = "First name is required")
-    @Column(name = "first_name", nullable = false, length = 50)
-    private String firstName;
+	@Column(name = "first_name", nullable = false, length = 50)
+	private String firstName;
 
-    @Column(name = "middle_name", length = 50)
-    private String middleName;
+	@Column(name = "middle_name", length = 50)
+	private String middleName;
 
-    @NotBlank(message = "Last name is required")
-    @Column(name = "last_name", nullable = false, length = 50)
-    private String lastName;
+	@Column(name = "last_name", nullable = false, length = 50)
+	private String lastName;
 
-    @NotNull(message = "Date of birth is required")
-    @Past(message = "Birth date must be in the past")
-    @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
+	@Column(name = "date_of_birth", nullable = false)
+	private LocalDate dateOfBirth;
 
-    @NotBlank(message = "Position is required")
-    @Column(name = "position", nullable = false, length = 100)
-    private String position;
+	@Column(name = "position", nullable = false, length = 100)
+	private String position;
 
 	public Long getId() {
 		return id;

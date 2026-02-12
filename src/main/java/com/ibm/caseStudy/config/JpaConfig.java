@@ -45,7 +45,7 @@ public class JpaConfig {
 		emf.setJpaVendorAdapter(vendorAdapter);
 
 		Properties props = new Properties();
-		props.put("hibernate.hbm2ddl.auto", "none");
+		props.put("hibernate.hbm2ddl.auto", "create-drop");
 		props.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
 		props.put("hibernate.show_sql", "true");
 		props.put("spring.jpa.defer-datasource-initialization", "true");
@@ -57,7 +57,6 @@ public class JpaConfig {
 	@Bean
 	public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
 	    ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-	    populator.addScript(new ClassPathResource("schema.sql"));
 	    populator.addScript(new ClassPathResource("data.sql"));
 	    
 	    DataSourceInitializer initializer = new DataSourceInitializer();
