@@ -1,7 +1,12 @@
 package com.ibm.caseStudy.model;
 
+import javax.persistence.*;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 
+<<<<<<< HEAD
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,49 +44,70 @@ public class Employee {
 
 	public Long getId() {
 		return id;
-	}
+=======
+@Entity
+@Table(name = "employees",
+       uniqueConstraints = @UniqueConstraint(
+           columnNames = {"first_name","middle_name","last_name","date_of_birth"}))
+public class Employee {
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long uid;
 
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "middle_name")
+    private String middleName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "date_of_birth", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
+
+    @Column(nullable = false)
+    private String position;
+	public Long getUid() {
+		return uid;
+>>>>>>> 072566eca27de27e69135cd93125643ded88f466
+	}
+	public void setUid(Long uid) {
+		this.uid = uid;
+	}
 	public String getFirstName() {
 		return firstName;
 	}
-
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
-
 	public String getMiddleName() {
 		return middleName;
 	}
-
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
 	}
-
 	public String getLastName() {
 		return lastName;
 	}
-
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-
-	public LocalDate getDateOfBirth() {
-		return dateOfBirth;
+	public LocalDate getBirthDate() {
+		return birthDate;
 	}
-
-	public void setDateOfBirth(LocalDate dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
 	}
-
 	public String getPosition() {
 		return position;
 	}
-
 	public void setPosition(String position) {
 		this.position = position;
 	}
+
+    
 }

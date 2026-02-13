@@ -1,15 +1,7 @@
-package com.ibm.caseStudy.service;
+package com.ibm.caseStudy.Service;
 
-import java.util.List;
-import com.ibm.caseStudy.dto.EmployeeDTO;
+import com.ibm.caseStudy.model.Employee;
 
 public interface EmployeeService {
-
-    void addEmployee(EmployeeDTO dto);
-
-    List<EmployeeDTO> searchEmployees(String firstName, String lastName, String position);
-
-    EmployeeDTO getEmployeeById(Long id);
-
-    void updateEmployee(EmployeeDTO dto);
+    void addEmployee(Employee employee);
 }

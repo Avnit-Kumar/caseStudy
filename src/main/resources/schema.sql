@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS employees (
     
     CONSTRAINT uk_employee_identity UNIQUE (first_name, middle_name, last_name, date_of_birth)
 );
-
 CREATE TABLE IF NOT EXISTS compensation (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     employee_id BIGINT NOT NULL,
