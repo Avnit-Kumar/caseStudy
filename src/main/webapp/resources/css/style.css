@@ -1,3 +1,4 @@
+
 /* ================= GLOBAL RESET ================= */
 * {
     margin: 0;
@@ -212,41 +213,19 @@ tr:hover {
     color: #c0392b;
     margin-top: 25px;
 }
-
-
+/* ================= FIELD ERROR STYLE ================= */
 .field-error {
-    color: #d93025;           /* strong red */
+    color: #d93025;              /* Strong red */
     font-size: 14px;
-    margin-top: 5px;
+    margin-top: 6px;
+    margin-bottom: 5px;
     font-weight: 500;
-    font-style: italic;
+    font-style: italic;          /* Italic text */
+    display: block;
 }
 
-/* Add red star automatically before error message */
+/* Add red star before every validation message */
 .field-error::before {
     content: "* ";
-    color: #d93025;
     font-weight: bold;
 }
-
-.message-success {
-    color: #2ecc71;          /* Green text */
-    background-color: #eafaf1; /* Light green background */
-    border: 1px solid #2ecc71;
-    padding: 10px;
-    border-radius: 6px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    font-style: italic;
-}
-
-.message-error {
-    color: #e74c3c;
-    background-color: #fdecea;
-    border: 1px solid #e74c3c;
-    padding: 10px;
-    border-radius: 6px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-

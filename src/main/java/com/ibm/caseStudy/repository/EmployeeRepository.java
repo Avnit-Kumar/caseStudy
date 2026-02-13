@@ -10,7 +10,7 @@ import java.util.Optional;
 //@Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-<<<<<<< HEAD
+
     Optional<Employee> findByFirstNameAndMiddleNameAndLastNameAndDateOfBirth(
             String firstName,
             String middleName,
@@ -25,12 +25,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     );
 
 }
-=======
-    Optional<Employee> findByFirstNameAndMiddleNameAndLastNameAndBirthDate(
-            String firstName,
-            String middleName,
-            String lastName,
-            LocalDate birthDate
-    );
-}
->>>>>>> 072566eca27de27e69135cd93125643ded88f466
+
+    
+
+
