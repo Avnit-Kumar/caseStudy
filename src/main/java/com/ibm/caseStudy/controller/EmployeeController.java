@@ -27,9 +27,7 @@ public class EmployeeController {
     public EmployeeController(EmployeeService service) {
         this.service = service;
     }
-
-    // ================= ADD EMPLOYEE =================
-
+    
     @GetMapping("/add")
     public String showForm(Model model) {
         model.addAttribute("employee", new EmployeeDTO());
@@ -57,7 +55,6 @@ public class EmployeeController {
         return "add-employee";
     }
 
-    // ================= SEARCH =================
 
     @GetMapping("/search")
     public String showSearchPage() {
@@ -70,6 +67,15 @@ public class EmployeeController {
             @RequestParam(required = false) String lastName,
             @RequestParam(required = false) String position,
             Model model) {
+    	
+    	model.addAttribute("searched",true);
+    	
+    	if    ((firstName==null || firstName.trim().isEmpty())&&
+    			(lastName==null || lastName.trim().isEmpty())&&
+    			(position ==null|| position.trim().isEmpty())) {
+    		model.addAttribute("message","please enter at least one search criteria");
+    		return "search-employee";
+    	}
 
         List<EmployeeDTO> results =
                 service.searchEmployees(firstName, lastName, position);
@@ -82,7 +88,6 @@ public class EmployeeController {
         return "search-employee";
     }
 
-    // ================= EDIT =================
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {

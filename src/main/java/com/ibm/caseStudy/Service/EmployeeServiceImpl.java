@@ -21,7 +21,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.repo = repo;
     }
 
-    // ================= ADD =================
+ 
 
     @Override
     public void addEmployee(EmployeeDTO dto) {
@@ -39,7 +39,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         repo.save(employee);
     }
 
-    // ================= SEARCH =================
 
     @Override
     public List<EmployeeDTO> searchEmployees(String firstName, String lastName, String position) {
@@ -55,7 +54,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
-    // ================= GET BY ID =================
 
     @Override
     public EmployeeDTO getEmployeeById(Long id) {
@@ -66,7 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return convertToDTO(employee);
     }
 
-    // ================= UPDATE =================
+  
 
     @Override
     public void updateEmployee(EmployeeDTO dto) {
@@ -88,7 +86,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         repo.save(employee);
     }
 
-    // ================= CONVERSION METHODS =================
+
 
     private Employee convertToEntity(EmployeeDTO dto) {
 

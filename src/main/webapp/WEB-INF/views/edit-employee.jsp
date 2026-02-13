@@ -1,140 +1,87 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>View / Edit Employee</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #eef2f3, #d9e4f5);
-            margin: 0;
-            padding: 0;
-        }
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-        h2 {
-            text-align: center;
-            margin-top: 30px;
-            color: #2c3e50;
-        }
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/resources/css/style.css">
 
-        .container {
-            width: 55%;
-            margin: 30px auto;
-            background: #ffffff;
-            padding: 30px 40px;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-
-        label {
-            font-weight: bold;
-            color: #34495e;
-            display: block;
-            margin-top: 15px;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        input[readonly] {
-            background-color: #f2f2f2;
-        }
-
-        .message-success {
-            color: green;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .message-error {
-            color: red;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .btn {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-            margin-right: 10px;
-            font-weight: bold;
-        }
-
-        .update-btn {
-            background-color: #27ae60;
-            color: white;
-        }
-
-        .back-btn {
-            background-color: #2c3e50;
-            color: white;
-        }
-    </style>
+    <script src="${pageContext.request.contextPath}/resources/js/script.js"></script>
 </head>
 
 <body>
 
-<h2>View / Edit Employee</h2>
+<a href="${pageContext.request.contextPath}/" class="home-icon">
+    <i class="fa-solid fa-house"></i>
+</a>
 
 <div class="container">
 
+    <h2>View / Edit Employee</h2>
+
+    <!-- Success Message -->
     <c:if test="${not empty success}">
         <p class="message-success">${success}</p>
     </c:if>
 
+    <!-- Error Message -->
     <c:if test="${not empty error}">
         <p class="message-error">${error}</p>
     </c:if>
 
-    <form method="post"
-      action="${pageContext.request.contextPath}/employee/edit/${employee.id}">
+    <!-- Spring Form Starts -->
+    <form:form method="post"
+               modelAttribute="employee"
+               action="${pageContext.request.contextPath}/employee/edit/${employee.id}">
 
-
+        <!-- ID -->
         <label>ID:</label>
-        <input type="text" name="id"
-               value="${employee.id}" readonly />
+        <form:input path="id" readonly="true" />
 
+        <!-- First Name -->
         <label>First Name*:</label>
-        <input type="text" name="firstName"
-               value="${employee.firstName}" />
+        <form:input path="firstName" />
+        <form:errors path="firstName" cssClass="field-error" />
 
+        <!-- Middle Name -->
         <label>Middle Name:</label>
-        <input type="text" name="middleName"
-               value="${employee.middleName}" />
+        <form:input path="middleName" />
+        <form:errors path="middleName" cssClass="field-error" />
 
+        <!-- Last Name -->
         <label>Last Name*:</label>
-        <input type="text" name="lastName"
-               value="${employee.lastName}" />
+        <form:input path="lastName" />
+        <form:errors path="lastName" cssClass="field-error" />
 
+        <!-- Birth Date -->
         <label>Birth Date*:</label>
-        <input type="date" name="dateOfBirth"
-               value="${employee.dateOfBirth}" />
+        <form:input path="dateOfBirth" type="date" />
+        <form:errors path="dateOfBirth" cssClass="field-error" />
 
+        <!-- Position -->
         <label>Position*:</label>
-        <input type="text" name="position"
-               value="${employee.position}" />
+        <form:input path="position" />
+        <form:errors path="position" cssClass="field-error" />
 
-        <br/>
+        <br/><br/>
 
         <button type="submit" class="btn update-btn">Update</button>
+        <button type="reset" class="btn clear-btn">Clear</button>
 
         <button type="button"
                 class="btn back-btn"
-                onclick="window.location.href='${pageContext.request.contextPath}/'">
-            Back to Home
+                onclick="window.location.href='${pageContext.request.contextPath}/employee/search'">
+            Back
         </button>
 
-    </form>
+    </form:form>
 
 </div>
 
