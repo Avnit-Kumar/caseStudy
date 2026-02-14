@@ -50,17 +50,9 @@ If the container is **not running**, check the logs:
 docker logs mysql-casedb
 ```
 
-### Employee Service
-- Add employee
-- Search employee - firstName, lastName and Position. use and if there are multiple filters.
-- Read Employee
-- Update Employee(except UID)
-
-### Compensation Service
-- Add Compensation
-- View all Compensations with total per month no splits(By employee within given date range)
-- View Compensation details(breakdown) (By employee and By Month)
-- Edit Compensation details(only amount and description)
+### TODO
+- If no compensation details for a month can be found, that month is not displayed. However, in the case where compensation details total zero,
+that month should still be displayed.
 ---
 
 Happy coding 🚀

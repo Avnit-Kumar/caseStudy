@@ -8,6 +8,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
 public class CompensationDTO {
+	private Long id;
+	
 	@NotNull(message = "Employee ID is required")
 	private Long employeeId;
 	
@@ -22,6 +24,14 @@ public class CompensationDTO {
 	@NotNull(message = "Payment date is required")
 	@PastOrPresent(message = "Payment date cannot be in the future")
 	private LocalDate date;
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Long getEmployeeId() {
 		return employeeId;

@@ -6,11 +6,16 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ibm.caseStudy.dto.CompensationDTO;
-import com.ibm.caseStudy.exception.BusinessException;
+import com.ibm.caseStudy.exception.AmountNegativeException;
+import com.ibm.caseStudy.exception.AmountZeroException;
+import com.ibm.caseStudy.exception.CompensationDoesNotExistException;
+import com.ibm.caseStudy.exception.NullDescriptionException;
+import com.ibm.caseStudy.exception.SalaryAlreadyExistsException;
 import com.ibm.caseStudy.mapper.CompensationMapper;
 import com.ibm.caseStudy.model.Compensation;
 import com.ibm.caseStudy.model.Employee;
@@ -26,14 +31,14 @@ public class CompensationServiceImpl implements CompensationService {
 	private boolean isBlank(String s) {
 		return s == null || s.trim().isEmpty();
 	}
-
+	
 	@Override
 	public Compensation addCompensation(CompensationDTO dto) {
 		String type = dto.getType();
 		BigDecimal amount = dto.getAmount();
 
 		Employee employee = employeeRepository.findById(dto.getEmployeeId())
-				.orElseThrow(() -> new BusinessException("Employee not found."));
+				.orElseThrow(() -> new RuntimeException("Employee not found."));
 		int year = dto.getDate().getYear();
 		int month = dto.getDate().getMonthValue();
 
@@ -41,26 +46,26 @@ public class CompensationServiceImpl implements CompensationService {
             boolean exists = compensationRepository.existsSalaryForMonth(
                     dto.getEmployeeId(), year, month);
             if (exists) {
-                throw new BusinessException("Only one salary entry allowed per employee per month.");
+                throw new SalaryAlreadyExistsException("Salary Already Exists for this month");
             }
 		}
 
 		List<String> positiveTypes = Arrays.asList("Bonus", "Commission", "Allowance");
 		if (positiveTypes.contains(type)) {
 			if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-				throw new BusinessException(type + " amount must be greater than 0.");
+				throw new AmountNegativeException(type + " amount must be greater than 0.");
 			}
 			if (isBlank(dto.getDescription())) {
-				throw new BusinessException(type + " requires a description.");
+				throw new NullDescriptionException(type + " requires a description.");
 			}
 		}
 
 		if ("Adjustment".equals(type)) {
 			if (amount.compareTo(BigDecimal.ZERO) == 0) {
-				throw new BusinessException("Adjustment amount cannot be zero.");
+				throw new AmountZeroException("Adjustment amount cannot be zero.");
 			}
 			if (isBlank(dto.getDescription())) {
-				throw new BusinessException("Adjustment requires a description.");
+				throw new NullDescriptionException("Adjustment requires a description.");
 			}
 		}
 
@@ -82,6 +87,12 @@ public class CompensationServiceImpl implements CompensationService {
         }
         return result;
 	}
+	
+	@Override
+	public BigDecimal getSingleMonthlyTotal(Long empId, int year, int month) {
+		BigDecimal total = compensationRepository.getSingleMonthlyTotal(empId, year, month);
+		return total != null ? total : BigDecimal.ZERO;
+	}
 
 	@Override
 	public List<Compensation> getBreakdown(Long employeeId, int year, int month) {
@@ -91,29 +102,36 @@ public class CompensationServiceImpl implements CompensationService {
 	@Override
 	public Compensation updateCompensation(Long id, Double newAmount, String description) {
 		Compensation comp = compensationRepository.findById(id)
-				.orElseThrow(() -> new BusinessException("Compensation not found."));
+				.orElseThrow(() -> new CompensationDoesNotExistException("Compensation not found."));
 		String type = comp.getType();
 		if (!"Salary".equals(type)) {
 			List<String> positiveTypes = Arrays.asList("Bonus", "Commission", "Allowance");
 			if (positiveTypes.contains(type)) {
 				if (newAmount <= 0) {
-					throw new BusinessException(type + " amount must be greater than 0.");
+					throw new AmountNegativeException(type + " amount must be greater than 0.");
 				}
 				if (isBlank(description)) {
-					throw new BusinessException(type + " requires a description.");
+					throw new NullDescriptionException(type + " requires a description.");
 				}
 			}
 			if ("Adjustment".equals(type)) {
 				if (newAmount == 0) {
-					throw new BusinessException("Adjustment amount cannot be zero.");
+					throw new AmountZeroException("Adjustment amount cannot be zero.");
 				}
 				if (isBlank(description)) {
-					throw new BusinessException("Adjustment requires a description.");
+					throw new NullDescriptionException("Adjustment requires a description.");
 				}
 			}
 		}
 		comp.setAmount(BigDecimal.valueOf(newAmount));
 		comp.setDescription(description);
 		return compensationRepository.save(comp);
+	}
+
+	@Override
+	public Compensation findCompensationById(Long id) {
+		Compensation comp = compensationRepository.findById(id)
+				.orElseThrow(() -> new CompensationDoesNotExistException("Compensation not found."));
+		return comp;
 	}
 }
