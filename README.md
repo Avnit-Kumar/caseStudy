@@ -50,6 +50,9 @@ If the container is **not running**, check the logs:
 docker logs mysql-casedb
 ```
 
+### TODO
+- If no compensation details for a month can be found, that month is not displayed. However, in the case where compensation details total zero,
+that month should still be displayed.
 ---
 
 Happy coding 🚀

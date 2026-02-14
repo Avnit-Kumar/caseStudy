@@ -17,6 +17,9 @@ public class CompensationMapper {
     // Entity → DTO
     public static CompensationDTO toDTO(Compensation comp) {
         CompensationDTO dto = new CompensationDTO();
+        if (comp.getEmployee() != null) {
+            dto.setEmployeeId(comp.getEmployee().getId());
+        }
         dto.setEmployeeId(comp.getEmployee().getId());
         dto.setType(comp.getType());
         dto.setAmount(comp.getAmount());
