@@ -1,3 +1,4 @@
+
 /* ================= GLOBAL RESET ================= */
 * {
     margin: 0;
@@ -228,3 +229,10 @@ tr:hover {
     content: "* ";
     font-weight: bold;
 }
+
+label.required::after {
+    content: " *";
+    color: red;
+    font-weight: bold;
+}
+

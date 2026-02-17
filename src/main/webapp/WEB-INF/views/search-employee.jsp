@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
@@ -20,13 +21,13 @@
 	<a href="${pageContext.request.contextPath}/" class="home-icon"> <i
 		class="fa-solid fa-house"></i>
 	</a>
-<br>
-<br>
-<br>
-	
+	<br>
+	<br>
+	<br>
+
 
 	<div class="container">
-	<h2>Search Employees</h2>
+		<h2>Search Employees</h2>
 		<form action="${pageContext.request.contextPath}/employee/results"
 			method="get">
 
@@ -81,7 +82,11 @@
 					<td>${emp.position}</td>
 					<td><a
 						href="${pageContext.request.contextPath}/employee/edit/${emp.id}">
-							View/Edit </a></td>
+							View/Edit </a> | <a
+						href="${pageContext.request.contextPath}/compensation/add/${emp.id}">
+							Add Compensation </a> | <a
+						href="${pageContext.request.contextPath}/compensation/history/${emp.id}">
+							View Compensation History </a></td>
 				</tr>
 			</c:forEach>
 		</table>

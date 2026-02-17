@@ -47,7 +47,7 @@
                modelAttribute="employee">
 
         <!-- First Name -->
-        <label>First Name*</label>
+        <label class="required">First Name</label>
         <form:input path="firstName" cssClass="input-field"/>
         <form:errors path="firstName" cssClass="field-error" element="div"/>
 
@@ -57,17 +57,17 @@
         <form:errors path="middleName" cssClass="field-error" element="div"/>
 
         <!-- Last Name -->
-        <label>Last Name*</label>
+        <label class="required">Last Name</label>
         <form:input path="lastName" cssClass="input-field"/>
         <form:errors path="lastName" cssClass="field-error" element="div"/>
 
         <!-- Date of Birth -->
-        <label>Date of Birth*</label>
+        <label class="required">Date of Birth</label>
         <form:input type="date" path="dateOfBirth" cssClass="input-field"/>
         <form:errors path="dateOfBirth" cssClass="field-error" element="div"/>
 
         <!-- Position -->
-        <label>Position*</label>
+        <label class="required">Position</label>
         <form:input path="position" cssClass="input-field"/>
         <form:errors path="position" cssClass="field-error" element="div"/>
 
@@ -86,73 +86,3 @@
 
 </body>
 </html>
-
-<%-- <%@ page contentType="text/html;charset=UTF-8"%> --%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> --%>
-<%-- <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %> --%>
-
-<!-- <html> -->
-<!-- <head> -->
-<!-- <title>Add Employee</title> -->
-
-<!-- <link rel="stylesheet" -->
-<!-- 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> -->
-
-<!-- <link rel="stylesheet" -->
-<%-- 	href="${pageContext.request.contextPath}/resources/css/style.css"> --%>
-
-<%-- <script src="${pageContext.request.contextPath}/resources/js/script.js"></script> --%>
-
-<!-- </head> -->
-
-<!-- <body> -->
-<%-- 	<a href="${pageContext.request.contextPath}/" class="home-icon"> <i --%>
-<!-- 		class="fa-solid fa-house"></i> -->
-<!-- 	</a> -->
-
-
-<!-- 	<div class="container"> -->
-
-<!-- 		<h2>Add Employee</h2> -->
-
-<%-- 		<c:if test="${not empty success}"> --%>
-<%-- 			<div class="success">${success}</div> --%>
-<%-- 		</c:if> --%>
-
-<%-- 		<c:if test="${not empty error}"> --%>
-<%-- 			<div class="error">${error}</div> --%>
-<%-- 		</c:if> --%>
-
-<%-- 		<form method="post" --%>
-<%-- 			action="${pageContext.request.contextPath}/employee/add"> --%>
-
-<!-- 			<label>First Name*</label> <input type="text" name="firstName" -->
-<%-- 				value="${employee.firstName}" /> <span class="field-error">${firstNameError}</span> --%>
-
-<!-- 			<label>Middle Name</label> <input type="text" name="middleName" -->
-<%-- 				value="${employee.middleName}" /> <span class="field-error">${middleNameError}</span> --%>
-
-<!-- 			<label>Last Name*</label> <input type="text" name="lastName" -->
-<%-- 				value="${employee.lastName}" /> <span class="field-error">${lastNameError}</span> --%>
-
-<!-- 			<label>Date of Birth*</label> <input type="date" name="dateOfBirth" -->
-<%-- 				value="${employee.dateOfBirth}" /> <span class="field-error">${dateOfBirthError}</span> --%>
-
-<!-- 			<label>Position*</label> <input type="text" name="position" -->
-<%-- 				value="${employee.position}" /> <span class="field-error">${positionError}</span> --%>
-
-<!-- 			<button type="submit" class="btn">Add Employee</button> -->
-<!-- 			<button type="reset" class="clear-btn">Clear</button> -->
-
-<!-- 			<!-- 			<button type="button" class="back-btn" --> -->
-<%-- 			<%-- 				onclick="window.location.href='${pageContext.request.contextPath}/'"> --%> --%>
-<!-- 			<!-- 				Back to Home</button> --> -->
-
-<%-- 		</form> --%>
-
-<!-- 	</div> -->
-
-<!-- </body> -->
-<!-- </html> -->
-
-

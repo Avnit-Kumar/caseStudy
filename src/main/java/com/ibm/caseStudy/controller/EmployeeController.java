@@ -1,3 +1,4 @@
+
 package com.ibm.caseStudy.controller;
 
 import java.util.List;
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.ibm.caseStudy.Service.EmployeeService;
 import com.ibm.caseStudy.dto.EmployeeDTO;
 import com.ibm.caseStudy.exception.EmployeeAlreadyExistsException;
+import com.ibm.caseStudy.service.EmployeeService;
 
 @Controller
 @RequestMapping("/employee")

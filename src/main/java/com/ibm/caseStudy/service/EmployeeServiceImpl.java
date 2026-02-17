@@ -1,4 +1,4 @@
-package com.ibm.caseStudy.Service;
+package com.ibm.caseStudy.service;
 
 import java.util.List;
 import java.util.stream.Collectors;

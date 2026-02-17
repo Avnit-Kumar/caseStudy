@@ -1,16 +1,14 @@
+
 package com.ibm.caseStudy.controller;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,130 +18,155 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ibm.caseStudy.dto.CompensationDTO;
-import com.ibm.caseStudy.exception.AmountNegativeException;
-import com.ibm.caseStudy.exception.AmountZeroException;
-import com.ibm.caseStudy.exception.CompensationDoesNotExistException;
-import com.ibm.caseStudy.exception.NullDescriptionException;
-import com.ibm.caseStudy.exception.SalaryAlreadyExistsException;
-import com.ibm.caseStudy.mapper.CompensationMapper;
+import com.ibm.caseStudy.dto.MonthlyCompensationDTO;
 import com.ibm.caseStudy.model.Compensation;
+import com.ibm.caseStudy.model.CompensationType;
 import com.ibm.caseStudy.service.CompensationService;
 
 @Controller
-@RequestMapping("/employees/{employeeId}/compensation")
+@RequestMapping("/compensation")
 public class CompensationController {
-	@Autowired
-	private CompensationService compensationService;
 
-	@GetMapping("/")
-	public String showHistory(@PathVariable Long employeeId,
-			@RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate start,
-			@RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate end, Model model) {
-		if (start == null) start = LocalDate.now().withDayOfYear(1);
-	    if (end == null) end = LocalDate.now();
-		Map<String, Double> totals = compensationService.getMonthlyTotalsForEmployee(employeeId, start, end);
-		model.addAttribute("totals", totals);
-		return "compensation-history";
-	}
+    private final CompensationService service;
 
-	@GetMapping("/add")
-	public String addCompensation(@PathVariable Long employeeId, Model model) {
-		CompensationDTO dto = new CompensationDTO();
-		dto.setEmployeeId(employeeId);
-		model.addAttribute("compensation", dto);
-		return "add-compensation";
-	}
+    public CompensationController(CompensationService service) {
+        this.service = service;
+    }
 
-	@PostMapping("/add")
-	public String addCompensation(@PathVariable Long employeeId,
-			@Valid @ModelAttribute("compensation") CompensationDTO compensationDTO, BindingResult result,
-			RedirectAttributes redirectAttribute) {
-		compensationDTO.setEmployeeId(employeeId);
+    @GetMapping("/add/{employeeId}")
+    public String showForm(@PathVariable Long employeeId, Model model) {
 
-		if (result.hasErrors()) {
-			return "add-compensation";
-		}
-		try {
-			compensationService.addCompensation(compensationDTO);
-		} catch (SalaryAlreadyExistsException ex) {
-			result.reject("global.error", ex.getMessage());
-			return "add-compensation";
-		} catch (AmountNegativeException | AmountZeroException ex) {
-			result.rejectValue("amount", "error.amount", ex.getMessage());
-			return "add-compensation";
-		} catch (NullDescriptionException ex) {
-			result.rejectValue("description", "error.description", ex.getMessage());
-			return "add-compensation";
-		} catch (Exception ex) {
-			result.reject("global.error", "An unexpected error occurred.");
-			return "add-compensation";
-		}
+        CompensationDTO dto = new CompensationDTO();
+        dto.setEmployeeId(employeeId);
 
-		redirectAttribute.addFlashAttribute("message", "Compensation added successfully!");
-		return "redirect:/employees/" + employeeId + "/compensation";
-	}
+        model.addAttribute("compensation", dto);
+        model.addAttribute("types", CompensationType.values());
 
-	@GetMapping("/breakdown/{year}/{month}")
-	public String viewBreakDown(@PathVariable Long employeeId, @PathVariable int year, @PathVariable int month,
-			Model model) {
-		List<Compensation> entities = compensationService.getBreakdown(employeeId, year, month);
+        return "add-compensation";
+    }
 
-		List<CompensationDTO> dtos = entities.stream().map(CompensationMapper::toDTO).collect(Collectors.toList());
-		BigDecimal total = compensationService.getSingleMonthlyTotal(employeeId, year, month);
+    @PostMapping("/add")
+    public String addCompensation(
+            @Valid @ModelAttribute("compensation") CompensationDTO dto,
+            BindingResult result,
+            Model model) {
 
-		model.addAttribute("compensations", dtos);
-		model.addAttribute("total", total);
-		model.addAttribute("selectedMonth", month);
-		model.addAttribute("selectedYear", year);
-		return "compensation-breakdown";
-	}
+        if (result.hasErrors()) {
+            model.addAttribute("types", CompensationType.values());
+            return "add-compensation";
+        }
 
-	@GetMapping("/{id}/edit/{year}/{month}")
-	public String showEditForm(@PathVariable Long id, 
-	                           @PathVariable Long employeeId,
-	                           @PathVariable int year, 
-	                           @PathVariable int month, 
-	                           Model model, 
-	                           RedirectAttributes redirectAttributes) {
-	    try {
-	        Compensation comp = compensationService.findCompensationById(id);
-	        model.addAttribute("compensation", CompensationMapper.toDTO(comp));
-	        
-	        model.addAttribute("year", year);
-	        model.addAttribute("month", month);
-	        
-	        return "edit-compensation";
-	    } catch(CompensationDoesNotExistException ex) {
-	        redirectAttributes.addFlashAttribute("error", ex.getMessage());
-	        return "redirect:/employees/" + employeeId + "/compensation/breakdown/" + year + "/" + month;
-	    }
-	}
-	
-	@PostMapping("/{id}/edit/{year}/{month}")
-	public String updateCompensation(@PathVariable Long employeeId,
-	                                 @PathVariable Long id,
-	                                 @PathVariable int year, 
-	                                 @PathVariable int month,
-	                                 @ModelAttribute("compensation") CompensationDTO dto,
-	                                 BindingResult result,
-	                                 RedirectAttributes redirectAttributes) {
-	    try {
-	        compensationService.updateCompensation(id, dto.getAmount().doubleValue(), dto.getDescription());	        
-	    } catch (AmountNegativeException | AmountZeroException ex) {
-	        result.rejectValue("amount", "error.amount", ex.getMessage());
-	        return "edit-compensation";
-	    } catch (NullDescriptionException ex) {
-	        result.rejectValue("description", "error.description", ex.getMessage());
-	        return "edit-compensation";
-	    } catch (Exception ex) {
-	        result.reject("global.error", "Update failed: " + ex.getMessage());
-	        return "edit-compensation";
-	    }
+        try {
+            service.addCompensation(dto);
+            model.addAttribute("success", "Compensation added successfully!");
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+        }
 
-	    redirectAttributes.addFlashAttribute("message", "Updated successfully!");
-	    return "redirect:/employees/" + employeeId + "/compensation/breakdown/" + year + "/" + month;
-	}
+        model.addAttribute("types", CompensationType.values());
+        return "add-compensation";
+    }
+    
+    @GetMapping("/history/{employeeId}")
+    public String showHistoryForm(@PathVariable Long employeeId, Model model) {
+
+        model.addAttribute("employeeId", employeeId);
+        return "compensation-history-form";
+    }
+
+    @PostMapping("/history")
+    public String viewHistory(
+            @RequestParam Long employeeId,
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            Model model) {
+
+        LocalDate start = LocalDate.parse(startDate + "-01");
+        LocalDate end = LocalDate.parse(endDate + "-01")
+                .withDayOfMonth(
+                        LocalDate.parse(endDate + "-01").lengthOfMonth());
+
+        if (end.isBefore(start)) {
+            model.addAttribute("error", "End date cannot be before start date");
+            model.addAttribute("employeeId", employeeId);
+            return "compensation-history-form";
+        }
+
+        List<MonthlyCompensationDTO> history =
+                service.getMonthlyCompensationHistory(employeeId, start, end);
+
+        model.addAttribute("history", history);
+        model.addAttribute("employeeId", employeeId);
+
+        return "compensation-history-result";
+    }
+    
+    @GetMapping("/breakdown/{employeeId}/{month}")
+    public String viewBreakdown(
+            @PathVariable Long employeeId,
+            @PathVariable String month,
+            Model model) {
+
+        YearMonth yearMonth = YearMonth.parse(month);
+
+        List<CompensationDTO> breakdown =
+                service.getCompensationBreakdown(employeeId, yearMonth);
+
+        BigDecimal total = breakdown.stream()
+                .map(CompensationDTO::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        model.addAttribute("breakdown", breakdown);
+        model.addAttribute("total", total);
+        model.addAttribute("employeeId", employeeId);
+        model.addAttribute("selectedMonth", month);
+
+        return "compensation-breakdown";
+    }
+    
+    @GetMapping("/edit/{id}")
+    public String showEditCompensationForm(
+            @PathVariable Long id,
+            Model model) {
+
+        Compensation comp = service.getCompensationEntityById(id);
+
+        model.addAttribute("comp", comp);
+
+        return "edit-compensation";
+    }
+    
+    @PostMapping("/edit/{id}")
+    public String updateCompensation(
+            @PathVariable Long id,
+            @RequestParam BigDecimal amount,
+            @RequestParam String description,
+            Model model) {
+
+        try {
+            service.updateCompensation(id, amount, description);
+
+            Compensation comp = service.getCompensationEntityById(id);
+
+            return "redirect:/compensation/breakdown/"
+                    + comp.getEmployee().getId()
+                    + "/"
+                    + java.time.YearMonth.from(comp.getPaymentDate());
+
+        } catch (RuntimeException e) {
+
+            Compensation comp = service.getCompensationEntityById(id);
+
+            model.addAttribute("comp", comp);
+            model.addAttribute("error", e.getMessage());
+
+            return "edit-compensation";
+        }
+    }
+
+
+
+
 }
