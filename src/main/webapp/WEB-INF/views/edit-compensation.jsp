@@ -26,7 +26,7 @@
       action="${pageContext.request.contextPath}/compensation/edit/${comp.id}">
 
     <label>Type</label>
-    <input type="text" value="${comp.type}" readonly/>
+    <input type="text" value="${comp.type}" readonly disabled=True/>
 
     <label>Payment Date</label>
     <input type="text" value="${comp.paymentDate}" readonly/>

@@ -46,8 +46,8 @@ public class JpaConfig {
 		emf.setJpaVendorAdapter(vendorAdapter);
 
 		Properties props = new Properties();
-		props.put("hibernate.hbm2ddl.auto", "create-drop");
-		//props.put("hibernate.hbm2ddl.auto", "update");
+//		props.put("hibernate.hbm2ddl.auto", "create-drop");
+		props.put("hibernate.hbm2ddl.auto", "update");
 
 		props.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
 		props.put("hibernate.show_sql", "true");

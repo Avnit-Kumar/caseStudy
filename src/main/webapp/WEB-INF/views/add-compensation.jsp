@@ -71,8 +71,13 @@
 
 			<button type="submit" class="btn">Add Compensation</button>
 
-			<button type="button" class="clear-btn"
-				onclick="window.history.back()">Back</button>
+<!-- 			<button type="button" class="clear-btn" -->
+<!-- 				onclick="window.history.back()">Back</button> -->
+
+<button type="button" class="clear-btn"
+        onclick="location.href='${pageContext.request.contextPath}/employee/results'">
+  Back
+</button>
 
 			<button type="reset" class="clear-btn">Clear</button>
 

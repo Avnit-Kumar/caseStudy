@@ -28,12 +28,12 @@
 
     <!-- Success Message -->
     <c:if test="${not empty success}">
-        <p class="message-success">${success}</p>
+        <p class="success">${success}</p>
     </c:if>
 
     <!-- Error Message -->
     <c:if test="${not empty error}">
-        <p class="message-error">${error}</p>
+        <p class="error">${error}</p>
     </c:if>
 
     <!-- Spring Form Starts -->
@@ -43,10 +43,10 @@
 
         <!-- ID -->
         <label>ID:</label>
-        <form:input path="id" readonly="true" />
+        <form:input path="id" readonly="true" disabled="true"/>
 
         <!-- First Name -->
-        <label>First Name*:</label>
+        <label class="required">First Name:</label>
         <form:input path="firstName" />
         <form:errors path="firstName" cssClass="field-error" />
 
@@ -56,17 +56,17 @@
         <form:errors path="middleName" cssClass="field-error" />
 
         <!-- Last Name -->
-        <label>Last Name*:</label>
+        <label class="required">Last Name:</label>
         <form:input path="lastName" />
         <form:errors path="lastName" cssClass="field-error" />
 
         <!-- Birth Date -->
-        <label>Birth Date*:</label>
+        <label class="required">Birth Date:</label>
         <form:input path="dateOfBirth" type="date" />
         <form:errors path="dateOfBirth" cssClass="field-error" />
 
         <!-- Position -->
-        <label>Position*:</label>
+        <label class="required">Position:</label>
         <form:input path="position" />
         <form:errors path="position" cssClass="field-error" />
 
