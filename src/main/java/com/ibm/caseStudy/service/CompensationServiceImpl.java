@@ -20,173 +20,148 @@ import com.ibm.caseStudy.model.Employee;
 import com.ibm.caseStudy.repository.CompensationRepository;
 import com.ibm.caseStudy.repository.EmployeeRepository;
 
-
 @Service
 @Transactional
 public class CompensationServiceImpl implements CompensationService {
 
-    private final CompensationRepository compensationRepo;
-    private final EmployeeRepository employeeRepo;
+	private final CompensationRepository compensationRepo;
+	private final EmployeeRepository employeeRepo;
 
-    public CompensationServiceImpl(CompensationRepository compensationRepo,
-                                   EmployeeRepository employeeRepo) {
-        this.compensationRepo = compensationRepo;
-        this.employeeRepo = employeeRepo;
-    }
-    
-    @Override
-    public List<MonthlyCompensationDTO> getMonthlyCompensationHistory(
-            Long employeeId,
-            LocalDate startDate,
-            LocalDate endDate) {
+	public CompensationServiceImpl(CompensationRepository compensationRepo, EmployeeRepository employeeRepo) {
+		this.compensationRepo = compensationRepo;
+		this.employeeRepo = employeeRepo;
+	}
 
-        List<Compensation> compensations =
-                compensationRepo.findByEmployeeIdAndPaymentDateBetween(
-                        employeeId, startDate, endDate);
+	@Override
+	public List<MonthlyCompensationDTO> getMonthlyCompensationHistory(Long employeeId, LocalDate startDate,
+			LocalDate endDate) {
 
-        Map<YearMonth, BigDecimal> monthlyTotals = new TreeMap<>();
+		List<Compensation> compensations = compensationRepo.findByEmployeeIdAndPaymentDateBetween(employeeId, startDate,
+				endDate);
 
-        for (Compensation comp : compensations) {
+		Map<YearMonth, BigDecimal> monthlyTotals = new TreeMap<>();
 
-            YearMonth ym = YearMonth.from(comp.getPaymentDate());
+		for (Compensation comp : compensations) {
 
-            monthlyTotals.putIfAbsent(ym, BigDecimal.ZERO);
+			YearMonth ym = YearMonth.from(comp.getPaymentDate());
 
-            monthlyTotals.put(ym,
-                    monthlyTotals.get(ym).add(comp.getAmount()));
-        }
+			monthlyTotals.putIfAbsent(ym, BigDecimal.ZERO);
 
-        return monthlyTotals.entrySet()
-                .stream()
-                .map(e -> new MonthlyCompensationDTO(
-                        e.getKey(),
-                        e.getValue()))
-                .collect(Collectors.toList());
-    }
-    @Override
-    public List<CompensationDTO> getCompensationBreakdown(
-            Long employeeId,
-            YearMonth month) {
+			monthlyTotals.put(ym, monthlyTotals.get(ym).add(comp.getAmount()));
+		}
 
-        LocalDate endOfMonth = month.atEndOfMonth();
+		return monthlyTotals.entrySet().stream().map(e -> new MonthlyCompensationDTO(e.getKey(), e.getValue()))
+				.collect(Collectors.toList());
+	}
 
-        List<Compensation> compensations =
-                compensationRepo.findByEmployeeIdAndPaymentDate(
-                        employeeId, endOfMonth);
+	@Override
+	public List<CompensationDTO> getCompensationBreakdown(Long employeeId, YearMonth month) {
 
-        return compensations.stream().map(comp -> {
+		LocalDate endOfMonth = month.atEndOfMonth();
 
-            CompensationDTO dto = new CompensationDTO();
-            dto.setId(comp.getId());
-            dto.setType(comp.getType());
-            dto.setAmount(comp.getAmount());
-            dto.setDescription(comp.getDescription());
-            dto.setPaymentDate(comp.getPaymentDate());
-            dto.setEmployeeId(employeeId);
+		List<Compensation> compensations = compensationRepo.findByEmployeeIdAndPaymentDate(employeeId, endOfMonth);
 
-            return dto;
+		return compensations.stream().map(comp -> {
 
-        }).collect(Collectors.toList());
-    }
-    
-    @Override
-    public void updateCompensation(Long id, BigDecimal amount, String description) {
+			CompensationDTO dto = new CompensationDTO();
+			dto.setId(comp.getId());
+			dto.setType(comp.getType());
+			dto.setAmount(comp.getAmount());
+			dto.setDescription(comp.getDescription());
+			dto.setPaymentDate(comp.getPaymentDate());
+			dto.setEmployeeId(employeeId);
 
-        Compensation comp = compensationRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Compensation not found"));
+			return dto;
 
-        // Validation rules same as Story 1.5
-        switch (comp.getType()) {
+		}).collect(Collectors.toList());
+	}
 
-            case BONUS:
-            case COMMISSION:
-            case ALLOWANCE:
-                if (amount.compareTo(BigDecimal.ZERO) <= 0)
-                    throw new RuntimeException("Amount must be greater than zero");
-                if (description == null || description.trim().isEmpty())
-                    throw new RuntimeException("Description is required");
-                break;
+	@Override
+	public void updateCompensation(Long id, BigDecimal amount, String description) {
 
-            case ADJUSTMENT:
-                if (amount.compareTo(BigDecimal.ZERO) == 0)
-                    throw new RuntimeException("Amount cannot be zero");
-                if (description == null || description.trim().isEmpty())
-                    throw new RuntimeException("Description is required");
-                break;
+		Compensation comp = compensationRepo.findById(id)
+				.orElseThrow(() -> new RuntimeException("Compensation not found"));
 
-            case SALARY:
-                // Salary can be zero or negative
-                // Description optional
-                break;
-        }
+		switch (comp.getType()) {
 
-        comp.setAmount(amount);
-        comp.setDescription(description);
+		case BONUS:
+		case COMMISSION:
+		case ALLOWANCE:
+			if (amount.compareTo(BigDecimal.ZERO) <= 0)
+				throw new RuntimeException("Amount must be greater than zero");
+			if (description == null || description.trim().isEmpty())
+				throw new RuntimeException("Description is required");
+			break;
 
-        compensationRepo.save(comp);
-    }
-    
-    @Override
-    public Compensation getCompensationEntityById(Long id) {
-        return compensationRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Compensation not found"));
-    }
+		case ADJUSTMENT:
+			if (amount.compareTo(BigDecimal.ZERO) == 0)
+				throw new RuntimeException("Amount cannot be zero");
+			if (description == null || description.trim().isEmpty())
+				throw new RuntimeException("Description is required");
+			break;
 
+		case SALARY:
+			break;
+		}
 
+		comp.setAmount(amount);
+		comp.setDescription(description);
 
+		compensationRepo.save(comp);
+	}
 
+	@Override
+	public Compensation getCompensationEntityById(Long id) {
+		return compensationRepo.findById(id).orElseThrow(() -> new RuntimeException("Compensation not found"));
+	}
 
-    @Override
-    public void addCompensation(CompensationDTO dto) {
+	@Override
+	public void addCompensation(CompensationDTO dto) {
 
-        Employee employee = employeeRepo.findById(dto.getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+		Employee employee = employeeRepo.findById(dto.getEmployeeId())
+				.orElseThrow(() -> new RuntimeException("Employee not found"));
 
-        LocalDate endOfMonth = dto.getPaymentDate()
-                .withDayOfMonth(dto.getPaymentDate().lengthOfMonth());
+		LocalDate endOfMonth = dto.getPaymentDate().withDayOfMonth(dto.getPaymentDate().lengthOfMonth());
 
-        validateCompensation(dto, employee.getId(), endOfMonth);
+		validateCompensation(dto, employee.getId(), endOfMonth);
 
-        Compensation comp = new Compensation();
-        comp.setType(dto.getType());
-        comp.setAmount(dto.getAmount());
-        comp.setDescription(dto.getDescription());
-        comp.setPaymentDate(endOfMonth);
-        comp.setEmployee(employee);
+		Compensation comp = new Compensation();
+		comp.setType(dto.getType());
+		comp.setAmount(dto.getAmount());
+		comp.setDescription(dto.getDescription());
+		comp.setPaymentDate(endOfMonth);
+		comp.setEmployee(employee);
 
-        compensationRepo.save(comp);
-    }
+		compensationRepo.save(comp);
+	}
 
-    private void validateCompensation(CompensationDTO dto,
-                                      Long empId,
-                                      LocalDate date) {
+	private void validateCompensation(CompensationDTO dto, Long empId, LocalDate date) {
 
-        BigDecimal amount = dto.getAmount();
+		BigDecimal amount = dto.getAmount();
 
-        switch (dto.getType()) {
+		switch (dto.getType()) {
 
-            case SALARY:
-                if (compensationRepo.existsByEmployeeIdAndTypeAndPaymentDate(
-                        empId, CompensationType.SALARY, date)) {
-                    throw new RuntimeException("Salary already exists for this month");
-                }
-                break;
+		case SALARY:
+			if (compensationRepo.existsByEmployeeIdAndTypeAndPaymentDate(empId, CompensationType.SALARY, date)) {
+				throw new RuntimeException("Salary already exists for this month");
+			}
+			break;
 
-            case BONUS:
-            case COMMISSION:
-            case ALLOWANCE:
-                if (amount.compareTo(BigDecimal.ZERO) <= 0)
-                    throw new RuntimeException("Amount must be greater than zero");
-                if (dto.getDescription() == null || dto.getDescription().isEmpty())
-                    throw new RuntimeException("Description is required");
-                break;
+		case BONUS:
+		case COMMISSION:
+		case ALLOWANCE:
+			if (amount.compareTo(BigDecimal.ZERO) <= 0)
+				throw new RuntimeException("Amount must be greater than zero");
+			if (dto.getDescription() == null || dto.getDescription().isEmpty())
+				throw new RuntimeException("Description is required");
+			break;
 
-            case ADJUSTMENT:
-                if (amount.compareTo(BigDecimal.ZERO) == 0)
-                    throw new RuntimeException("Amount cannot be zero");
-                if (dto.getDescription() == null || dto.getDescription().isEmpty())
-                    throw new RuntimeException("Description is required");
-                break;
-        }
-    }
+		case ADJUSTMENT:
+			if (amount.compareTo(BigDecimal.ZERO) == 0)
+				throw new RuntimeException("Amount cannot be zero");
+			if (dto.getDescription() == null || dto.getDescription().isEmpty())
+				throw new RuntimeException("Description is required");
+			break;
+		}
+	}
 }

@@ -15,102 +15,77 @@ import com.ibm.caseStudy.repository.EmployeeRepository;
 @Transactional
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeRepository repo;
+	private final EmployeeRepository repo;
 
-    public EmployeeServiceImpl(EmployeeRepository repo) {
-        this.repo = repo;
-    }
+	public EmployeeServiceImpl(EmployeeRepository repo) {
+		this.repo = repo;
+	}
 
- 
+	@Override
+	public void addEmployee(EmployeeDTO dto) {
 
-    @Override
-    public void addEmployee(EmployeeDTO dto) {
+		repo.findByFirstNameAndMiddleNameAndLastNameAndDateOfBirth(dto.getFirstName(), dto.getMiddleName(),
+				dto.getLastName(), dto.getDateOfBirth()).ifPresent(emp -> {
+					throw new EmployeeAlreadyExistsException();
+				});
 
-        repo.findByFirstNameAndMiddleNameAndLastNameAndDateOfBirth(
-                dto.getFirstName(),
-                dto.getMiddleName(),
-                dto.getLastName(),
-                dto.getDateOfBirth()
-        ).ifPresent(emp -> {
-            throw new EmployeeAlreadyExistsException();
-        });
+		Employee employee = convertToEntity(dto);
+		repo.save(employee);
+	}
 
-        Employee employee = convertToEntity(dto);
-        repo.save(employee);
-    }
+	@Override
+	public List<EmployeeDTO> searchEmployees(String firstName, String lastName, String position) {
 
+		return repo.findByFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCaseAndPositionContainingIgnoreCase(
+				firstName == null ? "" : firstName, lastName == null ? "" : lastName, position == null ? "" : position)
+				.stream().map(this::convertToDTO).collect(Collectors.toList());
+	}
 
-    @Override
-    public List<EmployeeDTO> searchEmployees(String firstName, String lastName, String position) {
+	@Override
+	public EmployeeDTO getEmployeeById(Long id) {
 
-        return repo
-                .findByFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCaseAndPositionContainingIgnoreCase(
-                        firstName == null ? "" : firstName,
-                        lastName == null ? "" : lastName,
-                        position == null ? "" : position
-                )
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
+		Employee employee = repo.findById(id).orElseThrow(() -> new RuntimeException("Employee not found"));
 
+		return convertToDTO(employee);
+	}
 
-    @Override
-    public EmployeeDTO getEmployeeById(Long id) {
+	@Override
+	public void updateEmployee(EmployeeDTO dto) {
 
-        Employee employee = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+		repo.findByFirstNameAndMiddleNameAndLastNameAndDateOfBirth(dto.getFirstName(), dto.getMiddleName(),
+				dto.getLastName(), dto.getDateOfBirth()).ifPresent(existing -> {
+					if (!existing.getId().equals(dto.getId())) {
+						throw new EmployeeAlreadyExistsException("Another employee already exists with same details");
+					}
+				});
 
-        return convertToDTO(employee);
-    }
+		Employee employee = convertToEntity(dto);
+		repo.save(employee);
+	}
 
-  
+	private Employee convertToEntity(EmployeeDTO dto) {
 
-    @Override
-    public void updateEmployee(EmployeeDTO dto) {
+		Employee employee = new Employee();
+		employee.setId(dto.getId());
+		employee.setFirstName(dto.getFirstName());
+		employee.setMiddleName(dto.getMiddleName());
+		employee.setLastName(dto.getLastName());
+		employee.setPosition(dto.getPosition());
+		employee.setDateOfBirth(dto.getDateOfBirth());
 
-        repo.findByFirstNameAndMiddleNameAndLastNameAndDateOfBirth(
-                dto.getFirstName(),
-                dto.getMiddleName(),
-                dto.getLastName(),
-                dto.getDateOfBirth()
-        ).ifPresent(existing -> {
-            if (!existing.getId().equals(dto.getId())) {
-                throw new EmployeeAlreadyExistsException(
-                        "Another employee already exists with same details"
-                );
-            }
-        });
+		return employee;
+	}
 
-        Employee employee = convertToEntity(dto);
-        repo.save(employee);
-    }
+	private EmployeeDTO convertToDTO(Employee employee) {
 
+		EmployeeDTO dto = new EmployeeDTO();
+		dto.setId(employee.getId());
+		dto.setFirstName(employee.getFirstName());
+		dto.setMiddleName(employee.getMiddleName());
+		dto.setLastName(employee.getLastName());
+		dto.setPosition(employee.getPosition());
+		dto.setDateOfBirth(employee.getDateOfBirth());
 
-
-    private Employee convertToEntity(EmployeeDTO dto) {
-
-        Employee employee = new Employee();
-        employee.setId(dto.getId());
-        employee.setFirstName(dto.getFirstName());
-        employee.setMiddleName(dto.getMiddleName());
-        employee.setLastName(dto.getLastName());
-        employee.setPosition(dto.getPosition());
-        employee.setDateOfBirth(dto.getDateOfBirth());
-
-        return employee;
-    }
-
-    private EmployeeDTO convertToDTO(Employee employee) {
-
-        EmployeeDTO dto = new EmployeeDTO();
-        dto.setId(employee.getId());
-        dto.setFirstName(employee.getFirstName());
-        dto.setMiddleName(employee.getMiddleName());
-        dto.setLastName(employee.getLastName());
-        dto.setPosition(employee.getPosition());
-        dto.setDateOfBirth(employee.getDateOfBirth());
-
-        return dto;
-    }
+		return dto;
+	}
 }

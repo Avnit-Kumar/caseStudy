@@ -12,69 +12,67 @@ import com.ibm.caseStudy.model.CompensationType;
 
 public class CompensationDTO {
 
-    private Long id;
+	private Long id;
 
-    @NotNull(message = "Type is required")
-    private CompensationType type;
+	@NotNull(message = "Type is required")
+	private CompensationType type;
 
-    @NotNull(message = "Amount is required")
-    private BigDecimal amount;
+	@NotNull(message = "Amount is required")
+	private BigDecimal amount;
 
-    private String description;
+	private String description;
 
-    @NotNull(message = "Payment date is required")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate paymentDate;
+	@NotNull(message = "Payment date is required")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate paymentDate;
 
-    private Long employeeId;
+	private Long employeeId;
 
-    // ===== GETTERS & SETTERS =====
+	public Long getId() {
+		return id;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public CompensationType getType() {
+		return type;
+	}
 
-    public CompensationType getType() {
-        return type;
-    }
+	public void setType(CompensationType type) {
+		this.type = type;
+	}
 
-    public void setType(CompensationType type) {
-        this.type = type;
-    }
+	public BigDecimal getAmount() {
+		return amount;
+	}
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public LocalDate getPaymentDate() {
+		return paymentDate;
+	}
 
-    public LocalDate getPaymentDate() {
-        return paymentDate;
-    }
+	public void setPaymentDate(LocalDate paymentDate) {
+		this.paymentDate = paymentDate;
+	}
 
-    public void setPaymentDate(LocalDate paymentDate) {
-        this.paymentDate = paymentDate;
-    }
+	public Long getEmployeeId() {
+		return employeeId;
+	}
 
-    public Long getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
-    }
+	public void setEmployeeId(Long employeeId) {
+		this.employeeId = employeeId;
+	}
 }
